@@ -58,6 +58,7 @@ namespace NLSQL.Controllers
             // Again, we don't want to use Json.NET - it doesn't know how to handle Struct
             // values etc.
             //string responseJson = dialogflowResponse.ToString();
+            DB db = new DB();
             string json = "{ \"response\": \"reposnding from server weee!\", \"q\": \"" + actualQuestion + "\"," + "	\"fulfillmentText\": \"Fetching results\", \"fulfillmentMessages\": [{ \"text\": {\"text\": [\"" + actualQuestion + "\"			]}}] }";
             return Content(json, "application/json");
         }
