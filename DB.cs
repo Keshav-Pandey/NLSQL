@@ -45,5 +45,28 @@ namespace NLSQL
                 return "did not work";
             }
         }
+
+        public string runOneLineQuery(string query)
+        {
+            try
+            {
+                connection.Open();
+                string output = "";
+                var cmd = new MySqlCommand(query, connection);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    for(int i=0; i < reader.VisibleFieldCount; i++)
+                        output += reader.GetString(i) + " ";
+                }
+                connection.Close();
+                return output;
+            }
+            catch (MySqlException ex)
+            {
+                System.Diagnostics.Debug.Write(ex.Message + connectionString);
+                return "did not work";
+            }
+        }
     }
 }
