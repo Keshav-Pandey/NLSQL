@@ -638,6 +638,38 @@ def webhook():
 										AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
 										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				response = str(response).replace(")","").replace(",","").replace("(","")
+	#-----------------------------------------------------------------------------------------------
+	# numberOfYears
+	#-----------------------------------------------------------------------------------------------
+	elif intentName == "numberOfYears":
+		# extracting parameters
+		name = params['given-name']
+
+        # removing apostrophes
+		if("'" in name):
+			name = name[:-2]
+		
+		# if its a aggregation query
+		countIndicator = params['countIndicator']
+		#-----------------------------------------------------------------------------------------------
+		# aggregation queries
+		#-----------------------------------------------------------------------------------------------
+		# the name is given but no title
+		if(name!=''):
+			response = dbRun("SELECT DATEDIFF(CURDATE(),hireDate) \
+								FROM Employee E \
+								WHERE (first_name=('" + name + "') OR last_name=('" + name + "'));")
+			response = str(response).replace(")","").replace(",","").replace("(","") + " days"
+			
+		# the name and title both are given
+		elif(title!='' and name!=''):
+			response = dbRun("SELECT DATEDIFF(fromDate,toDate) \
+								FROM Employee E, Title T \
+								WHERE E.id=T.empID \
+									AND title=('" + title + "') \
+									AND (first_name=('" + name + "') OR last_name=('" + name + "'));")
+			response = str(response).replace(")","").replace(",","").replace("(","") + " days"
+
 	reply = {
 	"response": "repsponding from server weee!",
 	"fulfillmentText": "Fetching results",
