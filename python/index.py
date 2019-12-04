@@ -484,9 +484,9 @@ def webhook():
 										AND month(birthDate) LIKE month('" + date + "') \
 										AND dayofmonth(birthDate) LIKE dayofmonth('" + date + "');")
 				if(len(str(response))==0):
-					response = title + " " + name + " does not have his/her birthday on the specified time."
+					response = title + " " + name + " does not join us in the specified time."
 				else:
-					response = title + " " + name + " has his/her birthday on the specified time"
+					response = title + " " + name + " joined us on " + response
 		#-----------------------------------------------------------------------------------------------
 		# aggregation queries
 		#-----------------------------------------------------------------------------------------------
@@ -543,18 +543,12 @@ def webhook():
 		# the end period for join date
 		startDate = params['date-period']['startDate']
 
-        # Occasion of the event
-        # occasion = params['occasion']
-
         # removing apostrophes
 		if("'" in name):
 			name = name[:-2]
 			
 		# job title
 		title = params['title']
-		
-		# date for joining, in this case it is always a singular date
-		date = params['date']
 		
 		# if its a aggregation query
 		countIndicator = params['countIndicator']
@@ -572,7 +566,7 @@ def webhook():
                                         AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
 										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				if(len(str(response))==0):
-					response = 'No '+title+"/s joined us on the specified time."
+					response = 'No '+ title + "/s joined us on the specified time."
 				else:
 					response = 'Here is a list of '+title+'/s that joined us in the specified time ' + response.replace(")","").replace(",","").replace("(","")
 					
@@ -581,12 +575,12 @@ def webhook():
 				response = dbRun("SELECT first_name, last_name \
 								  FROM Employee E \
 								  WHERE (first_name=('" + name + "') OR last_name=('" + name + "'))  \
-										AND month(hireDate) LIKE month('" + date + "') \
-										AND dayofmonth(hireDate) LIKE dayofmonth('" + date + "');")
+										AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
+										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				if(len(str(response))==0):
-					response = "Employees with names "+name+" did not join us on the specified time."
+					response = "Employees with names "+ name + " did not join us in the specified time."
 				else:
-					response = 'Employees with names '+name+' joined us on ' + response
+					response = 'Employees with names ' + name + ' joined us on ' + response
 					
 			# the name and title both are given
 			elif(title!='' and name!=''):
@@ -595,12 +589,12 @@ def webhook():
 								  WHERE E.id=T.empID \
 										AND title=('" + title + "') \
 										AND (first_name=('" + name + "') OR last_name=('" + name + "')) \
-										AND month(birthDate) LIKE month('" + date + "') \
-										AND dayofmonth(birthDate) LIKE dayofmonth('" + date + "');")
+										AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
+										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				if(len(str(response))==0):
-					response = title + " " + name + " does not have his/her birthday on the specified time."
+					response = title + " " + name + " did not join us in the specified time."
 				else:
-					response = title + " " + name + " has his/her birthday on the specified time"
+					response = title + " " + name + " has joined us on " + response
 		#-----------------------------------------------------------------------------------------------
 		# aggregation queries
 		#-----------------------------------------------------------------------------------------------
@@ -611,8 +605,8 @@ def webhook():
 								  FROM Employee E, Title T \
 								  WHERE E.id=T.empID \
 										AND title=('" + title + "') \
-										AND month(birthDate) LIKE month('" + date + "') \
-										AND dayofmonth(birthDate) LIKE dayofmonth('" + date + "');")
+										AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
+										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				response = str(response).replace(")","").replace(",","").replace("(","")
 		
 			# the name is given but no title
@@ -621,8 +615,8 @@ def webhook():
 								  FROM Employee E, Title T \
 								  WHERE E.id=T.empID \
 										AND (first_name=('" + name + "') OR last_name=('" + name + "'))  \
-										AND month(birthDate) LIKE month('" + date + "') \
-										AND dayofmonth(birthDate) LIKE dayofmonth('" + date + "');")
+										AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
+										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				response = str(response).replace(")","").replace(",","").replace("(","")
 				
 			# the name and title both are given
@@ -632,8 +626,8 @@ def webhook():
 								  WHERE E.id=T.empID \
 										AND title=('" + title + "') \
 										AND (first_name=('" + name + "') OR last_name=('" + name + "')) \
-										AND month(birthDate) LIKE month('" + date + "') \
-										AND dayofmonth(birthDate) LIKE dayofmonth('" + date + "');")
+										AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
+										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				response = str(response).replace(")","").replace(",","").replace("(","")
 				
 			# both title and name are not given but time is specified	
@@ -641,8 +635,8 @@ def webhook():
 				response = dbRun("SELECT COUNT(*) \
 								  FROM Employee E, Title T \
 								  WHERE E.id=T.empID \
-										AND month(birthDate) LIKE month('" + date + "') \
-										AND dayofmonth(birthDate) LIKE dayofmonth('" + date + "');")
+										AND month(hireDate) BETWEEN month('" + startDate + "') AND month('" + endDate + "') \
+										AND dayofmonth(hireDate) BETWEEN dayofmonth('" + startDate + "') AND dayofmonth('" + endDate + "');")
 				response = str(response).replace(")","").replace(",","").replace("(","")
 	reply = {
 	"response": "repsponding from server weee!",
