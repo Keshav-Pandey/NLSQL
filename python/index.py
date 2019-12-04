@@ -274,14 +274,14 @@ def webhook():
 								WHERE E.id = T.empID \
 									  AND title=('" + title + "');")
 			
-			response = "List of birthdates having title as " + title + " is " + response
+			response = "List of birthdates having title as " + name + " is " + response
 		
 		# if the name is given and no title
 		elif(name!='' and title==''):
 			response = dbRun("SELECT birthDate \
 								FROM Employee E \
 								WHERE first_name=('" + name + "') OR last_name=('" + name + "');")
-			response = "List of birthdates having names as " + title + " is " + response
+			response = "List of birthdates having names as " + name + " is " + response
 			
 		# if both name and title are given
 		elif(name!='' and title!=''):
@@ -290,7 +290,7 @@ def webhook():
 								WHERE E.id = T.empID \
 								AND first_name=('" + name + "') OR last_name=('" + name + "') \
 								AND title=('" + title + "');")
-			response = "Employess with title "+title+" and names "+name+" is/are born on "+response
+			response = "Employess with title "+title+" and names "+ name +" is/are born on "+response
 	
 	# TRAINING
 	elif intentName == "trained_or_not":
@@ -470,7 +470,7 @@ def webhook():
 										AND month(hireDate) LIKE month('" + date + "') \
 										AND dayofmonth(hireDate) LIKE dayofmonth('" + date + "');")
 				if(len(str(response))==0):
-					response = "Employees with names "name+" did not join us on the specified time."
+					response = "Employees with names "+ name + " did not join us on the specified time."
 				else:
 					response = 'Employees with names '+name+' joined us on ' + response
 					
@@ -584,7 +584,7 @@ def webhook():
 										AND month(hireDate) LIKE month('" + date + "') \
 										AND dayofmonth(hireDate) LIKE dayofmonth('" + date + "');")
 				if(len(str(response))==0):
-					response = "Employees with names "name+" did not join us on the specified time."
+					response = "Employees with names "+name+" did not join us on the specified time."
 				else:
 					response = 'Employees with names '+name+' joined us on ' + response
 					
@@ -644,7 +644,6 @@ def webhook():
 										AND month(birthDate) LIKE month('" + date + "') \
 										AND dayofmonth(birthDate) LIKE dayofmonth('" + date + "');")
 				response = str(response).replace(")","").replace(",","").replace("(","")
-
 	reply = {
 	"response": "repsponding from server weee!",
 	"fulfillmentText": "Fetching results",
@@ -652,7 +651,8 @@ def webhook():
 			"text": {
 				"text": [response]
 			}
-		}]
+		}],
+    "fulfillmentText": response,
 	}
 	
 	return jsonify(reply)
